@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Oyun Merkezi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: linear-gradient(to bottom right, #f0f0f0, #d9e4f5);
+            color: #333;
+        }
+
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #007bff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        nav button:hover {
+            background-color: #0056b3;
+        }
+
+        section {
+            display: none;
+            padding: 30px;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        button.game-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        button.game-btn:hover {
+            transform: scale(1.05);
+        }
+
+        input {
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        .score {
+            font-size: 20px;
+            margin-top: 15px;
+        }
+
+        .flash {
+            animation: flash 0.3s;
+        }
+
+        @keyframes flash {
+            from { background-color: yellow; }
+            to { background-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎮 Mini Oyun Merkezi</h1>
+        <p>4 oyun, sesli ve animasyonlu!</p>
+    </header>
+
+    <nav>
+        <button onclick="showGame('clickGame')">Tıklama Oyunu</button>
+        <button onclick="showGame('guessGame')">Sayı Tahmini</button>
+        <button onclick="showGame('mathGame')">Matematik Quiz</button>
+        <button onclick="showGame('rpsGame')">Taş-Kağıt-Makas</button>
+    </nav>
+
+    <!-- Oyun 1: Tıklama Oyunu -->
+    <section id="clickGame" class="active">
+        <h2>🖱️ tahaya basma oyunu</h2>
+        <p>Butona tıkla, skoru artır!</p>
+        <button id="clickBtn" class="game-btn">Tıkla!</button>
+        <div id="clickScore" class="score">Skor: 0 | En Yüksek: 0</div>
+    </section>
+
+    <!-- Oyun 2: Sayı Tahmini -->
+    <section id="guessGame">
+        <h2>🔢 Sayı Tahmini</h2>
+        <p>1 ile 20 arasında bir sayı tahmin et.</p>
+        <input type="number" id="guessInput" min="1" max="20">
+        <button onclick="checkGuess()" class="game-btn">Tahmin Et</button>
+        <div id="guessResult" class="score"></div>
+    </section>
+
+    <!-- Oyun 3: Matematik Quiz -->
+    <section id="mathGame">
+        <h2>➕ tahaya matematik öğretiyoruz</h2>
+        <div id="mathQuestion" class="score"></div>
+        <input type="number" id="mathAnswer">
+        <button onclick="checkMath()" class="game-btn">Cevapla</button>
+        <div id="mathFeedback" class="score"></div>
+    </section>
+
+    <!-- Oyun 4: Taş Kağıt Makas -->
+    <section id="rpsGame">
+        <h2>✊ Taş-Kağıt-Makas</h2>
+        <p>Seçimini yap:</p>
+        <button onclick="playRPS('taş')" class="game-btn">Taş</button>
+        <button onclick="playRPS('kağıt')" class="game-btn">Kağıt</button>
+        <button onclick="playRPS('makas')" class="game-btn">Makas</button>
+        <div id="rpsResult" class="score"></div>
+    </section>
+
+    <!-- Ses Efektleri -->
+    <audio id="clickSound" src="sounds/click.mp3" preload="auto"></audio>
+    <audio id="winSound" src="sounds/win.mp3" preload="auto"></audio>
+    <audio id="loseSound" src="sounds/lose.mp3" preload="auto"></audio>
+
+    <script>
+        // Sayfa geçişi
+        function showGame(id) {
+            document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+        }
+
+        // Tıklama Oyunu
+        let clickScore = 0;
+        let highScore = localStorage.getItem('highClick') || 0;
+        document.getElementById('clickScore').textContent = `Skor: ${clickScore} | En Yüksek: ${highScore}`;
+
+        document.getElementById('clickBtn').addEventListener('click', () => {
+            document.getElementById('clickSound').play();
+            clickScore++;
+            if (clickScore > highScore) {
+                highScore = clickScore;
+                localStorage.setItem('highClick', highScore);
+            }
+            const scoreEl = document.getElementById('clickScore');
+            scoreEl.textContent = `Skor: ${clickScore} | En Yüksek: ${highScore}`;
+            scoreEl.classList.add("flash");
+            setTimeout(() => scoreEl.classList.remove("flash"), 300);
+        });
+
+        // Sayı Tahmini
+        const secretNumber = Math.floor(Math.random() * 20) + 1;
+        function checkGuess() {
+            const guess = Number(document.getElementById('guessInput').value);
+            const result = document.getElementById('guessResult');
+            if (guess === secretNumber) {
+                result.textContent = "🎉 Doğru Tahmin!";
+                document.getElementById('winSound').play();
+            } else {
+                result.textContent = guess > secretNumber
+                    ? "📉 Daha küçük dene."
+                    : "📈 Daha büyük dene.";
+                document.getElementById('clickSound').play();
+            }
+        }
+
+        // Matematik Quiz
+        let num1, num2;
+        function newMathQuestion() {
+            num1 = Math.floor(Math.random() * 20);
+            num2 = Math.floor(Math.random() * 20);
+            document.getElementById('mathQuestion').textContent = `${num1} + ${num2} = ?`;
+        }
+
+        function checkMath() {
+            const answer = Number(document.getElementById('mathAnswer').value);
+            const feedback = document.getElementById('mathFeedback');
+            if (answer === num1 + num2) {
+                feedback.textContent = "✅ Doğru!";
+                document.getElementById('winSound').play();
+            } else {
+                feedback.textContent = "❌ Yanlış!";
+                document.getElementById('loseSound').play();
+            }
+            newMathQuestion();
+        }
+
+        newMathQuestion();
+
+        // Taş-Kağıt-Makas
+        function playRPS(playerChoice) {
+            const options = ["taş", "kağıt", "makas"];
+            const computer = options[Math.floor(Math.random() * 3)];
+            const result = document.getElementById('rpsResult');
+            
+            // Beraberlik durumu
+            if (playerChoice === computer) {
+                result.textContent = `🤝 Berabere! Bilgisayar da ${computer} seçti.`;
+                document.getElementById('clickSound').play();  // Beraberlik için tıklama sesi
+            } 
+            // Kazanma durumu
+            else if (
+                (playerChoice === "taş" && computer === "makas") ||
+                (playerChoice === "kağıt" && computer === "taş") ||
+                (playerChoice === "makas" && computer === "kağıt")
+            ) {
+                result.textContent = `🎉 Kazandın! Bilgisayar ${computer} seçti.`;
+                document.getElementById('winSound').play();  // Kazanma sesi
+            } 
+            // Kaybetme durumu
+            else {
+                result.textContent = `😔 Kaybettin! Bilgisayar ${computer} seçti.`;
+                document.getElementById('loseSound').play();  // Kaybetme sesi
+            }
+        }
+    </script>
+
+</body>
+</html>
