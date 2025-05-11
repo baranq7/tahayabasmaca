@@ -88,8 +88,8 @@
 <body>
 
     <header>
-        <h1>🎮 Mini Oyun Merkezi</h1>
-        <p>4 oyun, sesli ve animasyonlu!</p>
+        <h1>🎮 götünü skm taha</h1>
+        <p>4 oyun</p>
     </header>
 
     <nav>
@@ -101,7 +101,8 @@
 
     <!-- Oyun 1: Tıklama Oyunu -->
     <section id="clickGame" class="active">
-        <h2>🖱️ tahaya basma oyunu</h2>
+        <h2>🖱️ tahaya basma oyunu </h2>
+        <p>her basma tahaya bi vuruş</p>
         <p>Butona tıkla, skoru artır!</p>
         <button id="clickBtn" class="game-btn">Tıkla!</button>
         <div id="clickScore" class="score">Skor: 0 | En Yüksek: 0</div>
@@ -109,7 +110,7 @@
 
     <!-- Oyun 2: Sayı Tahmini -->
     <section id="guessGame">
-        <h2>🔢 Sayı Tahmini</h2>
+        <h2>🔢 sayı tahmini</h2>
         <p>1 ile 20 arasında bir sayı tahmin et.</p>
         <input type="number" id="guessInput" min="1" max="20">
         <button onclick="checkGuess()" class="game-btn">Tahmin Et</button>
@@ -118,7 +119,7 @@
 
     <!-- Oyun 3: Matematik Quiz -->
     <section id="mathGame">
-        <h2>➕ tahaya matematik öğretiyoruz</h2>
+        <h2>➕ tahaya Matematik Quiz</h2>
         <div id="mathQuestion" class="score"></div>
         <input type="number" id="mathAnswer">
         <button onclick="checkMath()" class="game-btn">Cevapla</button>
@@ -150,7 +151,7 @@
         // Tıklama Oyunu
         let clickScore = 0;
         let highScore = localStorage.getItem('highClick') || 0;
-        document.getElementById('clickScore').textContent = `Skor: ${clickScore} | En Yüksek: ${highScore}`;
+        document.getElementById('clickScore').textContent = `Skor: ${clickScore} | En çok tahaya basan: ${highScore}`;
 
         document.getElementById('clickBtn').addEventListener('click', () => {
             document.getElementById('clickSound').play();
@@ -171,7 +172,7 @@
             const guess = Number(document.getElementById('guessInput').value);
             const result = document.getElementById('guessResult');
             if (guess === secretNumber) {
-                result.textContent = "🎉 Doğru Tahmin!";
+                result.textContent = "🎉 aferin!";
                 document.getElementById('winSound').play();
             } else {
                 result.textContent = guess > secretNumber
@@ -221,12 +222,12 @@
                 (playerChoice === "kağıt" && computer === "taş") ||
                 (playerChoice === "makas" && computer === "kağıt")
             ) {
-                result.textContent = `🎉 Kazandın! Bilgisayar ${computer} seçti.`;
+                result.textContent = `aferin göt! Bilgisayar ${computer} seçti.`;
                 document.getElementById('winSound').play();  // Kazanma sesi
             } 
             // Kaybetme durumu
             else {
-                result.textContent = `😔 Kaybettin! Bilgisayar ${computer} seçti.`;
+                result.textContent = `haha mal! Bilgisayar ${computer} seçti.`;
                 document.getElementById('loseSound').play();  // Kaybetme sesi
             }
         }
